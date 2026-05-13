@@ -51,11 +51,14 @@ Currently supported cities: Ahmedabad, Bangalore, Chennai, Delhi, Hyderabad, Kol
 Extensive comparative analysis was conducted across multiple regression algorithms, including Linear Regression, Random Forest, XGBoost, LightGBM, CatBoost, and Multi-Layer Perceptron (MLP).
  
 The deployed XGBoost Regressor (`flight_price_prediction_model.pkl`) achieved an approximate **95.58% R-squared (R2) score** on the holdout test set, demonstrating high accuracy in predicting fare variations.
-
+ 
+## API Reference
+ 
+The application provides a RESTful endpoint for fare predictions.
+ 
 ### Endpoint: `/predict`
 - **Method:** `POST`
 - **Content-Type:** `application/x-www-form-urlencoded`
-
 **Successful Response:**
 ```json
 {
@@ -80,9 +83,8 @@ Airline-Fare-Predictor/
 ├── styles.css                            # Frontend styling
 ├── server.py                             # Flask application backend
 ├── requirements.txt                      # Project dependencies
+└── archive.zip                           # Archived source data
 ```
- 
-
  
 ## Installation & Setup
  
@@ -102,17 +104,8 @@ Airline-Fare-Predictor/
    ```bash
    # On macOS/Linux
    python3 -m venv venv
-   source venv/bin/activateAirline-Fare-Predictor/
-├── airline.ipynb                         # Data analysis and model training
-├── Cleaned_dataset.csv                   # Cleaned training dataset
-├── Scraped_dataset.csv                   # Original scraped dataset
-├── flight_price_prediction_model.pkl     # Serialized XGBoost model
-├── index.html                            # Frontend user interface
-├── styles.css                            # Frontend styling
-├── server.py                             # Flask application backend
-├── requirements.txt                      # Project dependencies
-└── archive.zip                           # Archived source data
-   
+   source venv/bin/activate
+ 
    # On Windows
    python -m venv venv
    venv\Scripts\activate
@@ -130,7 +123,4 @@ Airline-Fare-Predictor/
  
 5. **Access the web interface**
    Navigate to `http://127.0.0.1:5000` in your web browser.
-## API Reference
- 
-The application provides a RESTful endpoint for fare predictions.
  
