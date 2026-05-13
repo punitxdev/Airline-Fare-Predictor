@@ -96,7 +96,7 @@ The application provides a RESTful endpoint for fare predictions.
 ### Endpoint: `/predict`
 - **Method:** `POST`
 - **Content-Type:** `application/x-www-form-urlencoded`
-**Request Parameters:**
+-**Request Parameters:**
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `airline` | Integer | Airline option index |
