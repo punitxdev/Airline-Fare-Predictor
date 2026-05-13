@@ -96,19 +96,7 @@ The application provides a RESTful endpoint for fare predictions.
 ### Endpoint: `/predict`
 - **Method:** `POST`
 - **Content-Type:** `application/x-www-form-urlencoded`
--**Request Parameters:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `airline` | Integer | Airline option index |
-| `source` | Integer | Source city option index |
-| `destination` | Integer | Destination city option index |
-| `departure` | Integer | Departure time-window option index |
-| `arrival` | Integer | Arrival time-window option index |
-| `flight_class` | Integer | Cabin class (encoded) |
-| `total_stops` | Integer | Number of layovers |
-| `duration_hours` | Float | Flight duration in hours |
-| `days_left` | Integer | Days until the journey |
-| `journey_date` | Date | Date in `YYYY-MM-DD` format |
+
  
 **Successful Response:**
 ```json
