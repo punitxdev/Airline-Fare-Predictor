@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kashyap Airways Booking Console</title>
+    <link rel="stylesheet" href="/styles.css?v=3">
+</head>
+<body>
+    <main class="booking-app">
+        <header class="app-header">
+            <div class="brand">
+                <span class="brand-logo">KA</span>
+                <div>
+                    <h1>Kashyap Airways</h1>
+                    <p>Booking operations console</p>
+                </div>
+            </div>
+            <nav class="nav-tabs" aria-label="Booking sections">
+                <a class="active" href="#">Search</a>
+                <a href="#">Quotes</a>
+                <a href="#">Bookings</a>
+                <a href="#">Reports</a>
+            </nav>
+            <div class="agent-chip">
+                <span></span>
+                Model online
+            </div>
+        </header>
+
+        <section class="hero-board">
+            <div class="hero-copy">
+                <span class="eyebrow">AI Fare Desk</span>
+                <h2>Build a fare quote like a real airline booking platform.</h2>
+                <p>Search routes, cabin classes, timing windows, and booking lead time. The saved XGBoost model prices the itinerary instantly.</p>
+            </div>
+
+            <div class="boarding-card" aria-live="polite">
+                <div class="pricing-loader" id="pricing-loader" aria-hidden="true">
+                    <div class="loader-ring"></div>
+                    <div>
+                        <strong>Estimating your price</strong>
+                        <span>Checking route, timing, cabin, and lead time...</span>
+                    </div>
+                </div>
+                <div class="boarding-top">
+                    <span>Fare Quote</span>
+                    <strong id="fare-output">₹--</strong>
+                </div>
+                <div class="boarding-route">
+                    <span id="source-code">SRC</span>
+                    <div class="flight-path">
+                        <span></span>
+                    </div>
+                    <span id="destination-code">DST</span>
+                </div>
+                <div class="boarding-meta">
+                    <div>
+                        <small>Airline</small>
+                        <strong id="quote-airline">Select</strong>
+                    </div>
+                    <div>
+                        <small>Journey</small>
+                        <strong id="quote-date">Pending</strong>
+                    </div>
+                    <div>
+                        <small>Status</small>
+                        <strong id="quote-status">Ready</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-grid">
+            <form id="prediction-form" class="search-panel" action="/predict" method="post">
+                <div class="panel-title">
+                    <div>
+                        <span class="eyebrow">Flight Search</span>
+                        <h3>Itinerary Builder</h3>
+                    </div>
+                    <button type="button" class="secondary-button" id="fill-sample">Load Sample</button>
+                </div>
+
+                <div class="trip-type" role="group" aria-label="Trip type">
+                    <button type="button" class="active">One Way</button>
+                    <button type="button">Round Trip</button>
+                    <button type="button">Multi City</button>
+                </div>
+
+                <div class="route-picker">
+                    <label class="field large-field">
+                        <span>From</span>
+                        <select id="source" name="source" required>
+                            <option value="">Select city</option>
+                            <option value="1">Ahmedabad</option>
+                            <option value="2">Bangalore</option>
+                            <option value="3">Chennai</option>
+                            <option value="4">Delhi</option>
+                            <option value="5">Hyderabad</option>
+                            <option value="6">Kolkata</option>
+                            <option value="7">Mumbai</option>
+                        </select>
+                    </label>
+
+                    <button class="swap-button" type="button" id="swap-route" aria-label="Swap source and destination">⇄</button>
+
+                    <label class="field large-field">
+                        <span>To</span>
+                        <select id="destination" name="destination" required>
+                            <option value="">Select city</option>
+                            <option value="1">Ahmedabad</option>
+                            <option value="2">Bangalore</option>
+                            <option value="3">Chennai</option>
+                            <option value="4">Delhi</option>
+                            <option value="5">Hyderabad</option>
+                            <option value="6">Kolkata</option>
+                            <option value="7">Mumbai</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="form-grid">
+                    <label class="field">
+                        <span>Airline</span>
+                        <select id="airline" name="airline" required>
+                            <option value="">Select airline</option>
+                            <option value="1">Air India</option>
+                            <option value="2">AirAsia</option>
+                            <option value="3">AkasaAir</option>
+                            <option value="4">AllianceAir</option>
+                            <option value="5">GO FIRST</option>
+                            <option value="6">Indigo</option>
+                            <option value="7">SpiceJet</option>
+                            <option value="8">StarAir</option>
+                            <option value="9">Vistara</option>
+                        </select>
+                    </label>
+
+                    <label class="field">
+                        <span>Cabin</span>
+                        <select id="flight_class" name="flight_class" required>
+                            <option value="">Select cabin</option>
+                            <option value="0">Economy</option>
+                            <option value="1">Premium Economy</option>
+                            <option value="2">Business</option>
+                            <option value="3">First</option>
+                        </select>
+                    </label>
+
+                    <label class="field">
+                        <span>Journey Date</span>
+                        <input type="date" id="journey_date" name="journey_date" required>
+                    </label>
+
+                    <label class="field">
+                        <span>Stops</span>
+                        <select id="total_stops" name="total_stops" required>
+                            <option value="">Select stops</option>
+                            <option value="0">Non-stop</option>
+                            <option value="1">1-stop</option>
+                            <option value="2">2+ stops</option>
+                        </select>
+                    </label>
+
+                    <label class="field">
+                        <span>Departure</span>
+                        <select id="departure" name="departure" required>
+                            <option value="">Select window</option>
+                            <option value="1">Before 6 AM</option>
+                            <option value="2">6 AM - 12 PM</option>
+                            <option value="3">12 PM - 6 PM</option>
+                            <option value="4">After 6 PM</option>
+                        </select>
+                    </label>
+
+                    <label class="field">
+                        <span>Arrival</span>
+                        <select id="arrival" name="arrival" required>
+                            <option value="">Select window</option>
+                            <option value="1">Before 6 AM</option>
+                            <option value="2">6 AM - 12 PM</option>
+                            <option value="3">12 PM - 6 PM</option>
+                            <option value="4">After 6 PM</option>
+                        </select>
+                    </label>
+
+                    <label class="field">
+                        <span>Duration</span>
+                        <input type="number" id="duration_hours" name="duration_hours" step="0.01" min="0.75" max="43.58" placeholder="2.25" required>
+                    </label>
+
+                    <label class="field">
+                        <span>Days Left</span>
+                        <input type="number" id="days_left" name="days_left" min="1" max="50" placeholder="20" required>
+                    </label>
+                </div>
+
+                <div id="form-message" class="form-message" role="status"></div>
+
+                <div class="actions">
+                    <button type="submit" id="submit-button">Search Fare</button>
+                </div>
+            </form>
+
+            <aside class="booking-sidebar">
+                <section class="summary-card">
+                    <span class="eyebrow">Trip Summary</span>
+                    <div class="summary-route">
+                        <strong id="source-chip">Source</strong>
+                        <span>→</span>
+                        <strong id="destination-chip">Destination</strong>
+                    </div>
+                    <dl>
+                        <div>
+                            <dt>Cabin</dt>
+                            <dd id="summary-cabin">Not selected</dd>
+                        </div>
+                        <div>
+                            <dt>Stops</dt>
+                            <dd id="summary-stops">Not selected</dd>
+                        </div>
+                        <div>
+                            <dt>Duration</dt>
+                            <dd id="summary-duration">-- hr</dd>
+                        </div>
+                        <div>
+                            <dt>Lead Time</dt>
+                            <dd id="summary-days">-- days</dd>
+                        </div>
+                    </dl>
+                </section>
+
+                <section class="ticket-card">
+                    <div>
+                        <span class="eyebrow">Booking Hold</span>
+                        <strong id="booking-ref">KA-0000</strong>
+                    </div>
+                    <button type="button" class="primary-light">Hold Fare</button>
+                </section>
+            </aside>
+        </section>
+
+        <section class="operations-grid">
+            <article class="results-panel">
+                <div class="panel-title compact">
+                    <div>
+                        <span class="eyebrow">Available Quote</span>
+                        <h3>Recommended Flight</h3>
+                    </div>
+                    <span id="result-badge">Awaiting search</span>
+                </div>
+
+                <div class="flight-result">
+                    <div class="airline-mark" id="airline-mark">KA</div>
+                    <div class="flight-main">
+                        <strong id="result-airline">Choose itinerary</strong>
+                        <span id="result-route">Search route and model fare will appear here.</span>
+                    </div>
+                    <div class="timeline">
+                        <span id="depart-window">Departure</span>
+                        <div class="line"></div>
+                        <span id="arrival-window">Arrival</span>
+                    </div>
+                    <div class="fare-column">
+                        <span>Predicted fare</span>
+                        <strong id="result-fare">₹--</strong>
+                    </div>
+                </div>
+            </article>
+
+            <article class="market-panel">
+                <div class="panel-title compact">
+                    <div>
+                        <span class="eyebrow">Airline Market</span>
+                        <h3>Carrier Mix</h3>
+                    </div>
+                </div>
+                <div class="carrier-list">
+                    <div><span>Indigo</span><strong>Fast booking volume</strong></div>
+                    <div><span>Air India</span><strong>Full-service network</strong></div>
+                    <div><span>Vistara</span><strong>Premium demand</strong></div>
+                </div>
+            </article>
+
+            <article class="analytics-panel">
+                <div class="panel-title compact">
+                    <div>
+                        <span class="eyebrow">Model Snapshot</span>
+                        <h3>Training Signals</h3>
+                    </div>
+                </div>
+                <div class="stat-row">
+                    <div><span>Dataset</span><strong>452,088</strong></div>
+                    <div><span>Features</span><strong>45</strong></div>
+                    <div><span>Fare Min</span><strong>₹1,307</strong></div>
+                    <div><span>Fare Max</span><strong>₹143,019</strong></div>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <script>
+        const form = document.getElementById('prediction-form');
+        const fareOutput = document.getElementById('fare-output');
+        const sourceChip = document.getElementById('source-chip');
+        const destinationChip = document.getElementById('destination-chip');
+        const sourceCode = document.getElementById('source-code');
+        const destinationCode = document.getElementById('destination-code');
+        const quoteAirline = document.getElementById('quote-airline');
+        const quoteDate = document.getElementById('quote-date');
+        const quoteStatus = document.getElementById('quote-status');
+        const message = document.getElementById('form-message');
+        const submitButton = document.getElementById('submit-button');
+        const bookingRef = document.getElementById('booking-ref');
+        const resultBadge = document.getElementById('result-badge');
+        const resultAirline = document.getElementById('result-airline');
+        const resultRoute = document.getElementById('result-route');
+        const resultFare = document.getElementById('result-fare');
+        const departWindow = document.getElementById('depart-window');
+        const arrivalWindow = document.getElementById('arrival-window');
+        const airlineMark = document.getElementById('airline-mark');
+        const boardingCard = document.querySelector('.boarding-card');
+        const flightResult = document.querySelector('.flight-result');
+        const pricingLoader = document.getElementById('pricing-loader');
+
+        const sampleValues = {
+            airline: '6',
+            flight_class: '0',
+            source: '4',
+            destination: '7',
+            total_stops: '0',
+            journey_date: '2026-06-15',
+            departure: '2',
+            arrival: '3',
+            duration_hours: '2.25',
+            days_left: '33'
+        };
+
+        function selectedText(id) {
+            const element = document.getElementById(id);
+            return element.options[element.selectedIndex]?.text || '';
+        }
+
+        function cityCode(city) {
+            if (!city || city.includes('Select')) return city === 'Destination' ? 'DST' : 'SRC';
+            return city.slice(0, 3).toUpperCase();
+        }
+
+        function updateBookingRef() {
+            const source = cityCode(selectedText('source'));
+            const destination = cityCode(selectedText('destination'));
+            const airline = selectedText('airline').replace(/\s+/g, '').slice(0, 2).toUpperCase() || 'KA';
+            bookingRef.textContent = `${airline}-${source}${destination}`;
+        }
+
+        function updateRoutePreview() {
+            const source = selectedText('source') || 'Source';
+            const destination = selectedText('destination') || 'Destination';
+            const airline = selectedText('airline') || 'Select';
+            const cabin = selectedText('flight_class') || 'Not selected';
+            const stops = selectedText('total_stops') || 'Not selected';
+            const departure = selectedText('departure') || 'Departure';
+            const arrival = selectedText('arrival') || 'Arrival';
+            const date = document.getElementById('journey_date').value || 'Pending';
+            const duration = document.getElementById('duration_hours').value;
+            const days = document.getElementById('days_left').value;
+
+            sourceChip.textContent = source;
+            destinationChip.textContent = destination;
+            sourceCode.textContent = cityCode(source);
+            destinationCode.textContent = cityCode(destination);
+            quoteAirline.textContent = airline;
+            quoteDate.textContent = date;
+            document.getElementById('summary-cabin').textContent = cabin;
+            document.getElementById('summary-stops').textContent = stops;
+            document.getElementById('summary-duration').textContent = duration ? `${duration} hr` : '-- hr';
+            document.getElementById('summary-days').textContent = days ? `${days} days` : '-- days';
+            departWindow.textContent = departure;
+            arrivalWindow.textContent = arrival;
+            airlineMark.textContent = airline === 'Select' ? 'KA' : airline.slice(0, 2).toUpperCase();
+            updateBookingRef();
+        }
+
+        document.querySelectorAll('select, input').forEach((control) => {
+            control.addEventListener('change', updateRoutePreview);
+            control.addEventListener('input', updateRoutePreview);
+        });
+
+        document.getElementById('swap-route').addEventListener('click', () => {
+            const source = document.getElementById('source');
+            const destination = document.getElementById('destination');
+            const sourceValue = source.value;
+            source.value = destination.value;
+            destination.value = sourceValue;
+            updateRoutePreview();
+        });
+
+        document.getElementById('fill-sample').addEventListener('click', () => {
+            Object.entries(sampleValues).forEach(([key, value]) => {
+                document.getElementById(key).value = value;
+            });
+            updateRoutePreview();
+            message.textContent = '';
+            message.className = 'form-message';
+        });
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            message.textContent = '';
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<span class="button-spinner"></span> Estimating your price';
+            quoteStatus.textContent = 'Pricing';
+            boardingCard.classList.add('pricing');
+            pricingLoader.setAttribute('aria-hidden', 'false');
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: new FormData(form)
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Prediction failed.');
+                }
+
+                fareOutput.textContent = data.formatted_prediction;
+                resultFare.textContent = data.formatted_prediction;
+                resultAirline.textContent = `${data.airline} Recommended`;
+                resultRoute.textContent = `${data.route} | ${data.journey_day}`;
+                quoteStatus.textContent = 'Quoted';
+                resultBadge.textContent = 'Live estimate';
+                message.textContent = data.confidence_note;
+                message.className = 'form-message success';
+                boardingCard.classList.remove('quoted');
+                flightResult.classList.remove('quoted');
+                void boardingCard.offsetWidth;
+                boardingCard.classList.add('quoted');
+                flightResult.classList.add('quoted');
+                updateRoutePreview();
+            } catch (error) {
+                quoteStatus.textContent = 'Review';
+                message.textContent = error.message;
+                message.className = 'form-message error';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Search Fare';
+                boardingCard.classList.remove('pricing');
+                pricingLoader.setAttribute('aria-hidden', 'true');
+            }
+        });
+
+        updateRoutePreview();
+    </script>
+</body>
+</html>
