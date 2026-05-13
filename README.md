@@ -51,6 +51,39 @@ Currently supported cities: Ahmedabad, Bangalore, Chennai, Delhi, Hyderabad, Kol
 Extensive comparative analysis was conducted across multiple regression algorithms, including Linear Regression, Random Forest, XGBoost, LightGBM, CatBoost, and Multi-Layer Perceptron (MLP).
  
 The deployed XGBoost Regressor (`flight_price_prediction_model.pkl`) achieved an approximate **95.58% R-squared (R2) score** on the holdout test set, demonstrating high accuracy in predicting fare variations.
+
+### Endpoint: `/predict`
+- **Method:** `POST`
+- **Content-Type:** `application/x-www-form-urlencoded`
+
+**Successful Response:**
+```json
+{
+  "prediction": 6234.5,
+  "formatted_prediction": "₹6,234.50",
+  "route": "Delhi to Mumbai",
+  "airline": "Indigo",
+  "journey_day": "Monday",
+  "confidence_note": "Estimate from the saved XGBoost model"
+}
+```
+ 
+## Project Structure
+ 
+```text
+Airline-Fare-Predictor/
+├── airline.ipynb                         # Data analysis and model training
+├── Cleaned_dataset.csv                   # Cleaned training dataset
+├── Scraped_dataset.csv                   # Original scraped dataset
+├── flight_price_prediction_model.pkl     # Serialized XGBoost model
+├── index.html                            # Frontend user interface
+├── styles.css                            # Frontend styling
+├── server.py                             # Flask application backend
+├── requirements.txt                      # Project dependencies
+└── archive.zip                           # Archived source data
+```
+ 
+
  
 ## Installation & Setup
  
@@ -92,36 +125,4 @@ The deployed XGBoost Regressor (`flight_price_prediction_model.pkl`) achieved an
 ## API Reference
  
 The application provides a RESTful endpoint for fare predictions.
- 
-### Endpoint: `/predict`
-- **Method:** `POST`
-- **Content-Type:** `application/x-www-form-urlencoded`
-
- 
-**Successful Response:**
-```json
-{
-  "prediction": 6234.5,
-  "formatted_prediction": "₹6,234.50",
-  "route": "Delhi to Mumbai",
-  "airline": "Indigo",
-  "journey_day": "Monday",
-  "confidence_note": "Estimate from the saved XGBoost model"
-}
-```
- 
-## Project Structure
- 
-```text
-Airline-Fare-Predictor/
-├── airline.ipynb                         # Data analysis and model training
-├── Cleaned_dataset.csv                   # Cleaned training dataset
-├── Scraped_dataset.csv                   # Original scraped dataset
-├── flight_price_prediction_model.pkl     # Serialized XGBoost model
-├── index.html                            # Frontend user interface
-├── styles.css                            # Frontend styling
-├── server.py                             # Flask application backend
-├── requirements.txt                      # Project dependencies
-└── archive.zip                           # Archived source data
-```
  
