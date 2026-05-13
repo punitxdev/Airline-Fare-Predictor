@@ -80,7 +80,6 @@ Airline-Fare-Predictor/
 ├── styles.css                            # Frontend styling
 ├── server.py                             # Flask application backend
 ├── requirements.txt                      # Project dependencies
-└── archive.zip                           # Archived source data
 ```
  
 
@@ -103,7 +102,16 @@ Airline-Fare-Predictor/
    ```bash
    # On macOS/Linux
    python3 -m venv venv
-   source venv/bin/activate
+   source venv/bin/activateAirline-Fare-Predictor/
+├── airline.ipynb                         # Data analysis and model training
+├── Cleaned_dataset.csv                   # Cleaned training dataset
+├── Scraped_dataset.csv                   # Original scraped dataset
+├── flight_price_prediction_model.pkl     # Serialized XGBoost model
+├── index.html                            # Frontend user interface
+├── styles.css                            # Frontend styling
+├── server.py                             # Flask application backend
+├── requirements.txt                      # Project dependencies
+└── archive.zip                           # Archived source data
    
    # On Windows
    python -m venv venv
