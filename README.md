@@ -1,161 +1,121 @@
-# Airline Fare Prediction
+# Airline Fare Predictor
 
-A machine learning web application that predicts Indian domestic flight fares from route, airline, cabin class, stops, departure and arrival windows, journey date, travel duration, and booking lead time.
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-2.3.3-lightgrey.svg)](https://flask.palletsprojects.com/)
+[![XGBoost](https://img.shields.io/badge/XGBoost-1.7.6-orange.svg)](https://xgboost.readthedocs.io/)
+[![Pandas](https://img.shields.io/badge/Pandas-2.0.3-blue.svg)](https://pandas.pydata.org/)
 
-The project includes a trained XGBoost regression model, a Flask prediction API, and a responsive booking-console style frontend.
+## Project Overview
 
-## Features
+The Airline Fare Predictor is a machine learning web application designed to forecast Indian domestic flight fares. It leverages a trained XGBoost regression model exposed via a Flask backend, and a responsive web interface for seamless user interaction. The model considers various parameters including route, airline, cabin class, layovers, departure and arrival time windows, journey date, travel duration, and booking lead time to provide accurate fare estimations.
 
-- Predicts flight fares in INR using a saved XGBoost model.
-- Browser-based itinerary form with live route summary.
-- Flask `/predict` endpoint for model inference.
-- Input validation for city routes, duration, and days left.
-- Includes cleaned and scraped airline fare datasets.
-- Jupyter notebook with preprocessing, model training, comparison, and final model export.
+## Key Features
 
-## Tech Stack
+- **Real-time Fare Prediction:** Provides instant flight fare estimations in INR utilizing a robust XGBoost regression model.
+- **Interactive Web Interface:** A browser-based booking-console style frontend with live route summaries and form validation.
+- **RESTful API:** Exposes a Flask `/predict` endpoint for model inference, allowing for easy integration with other services.
+- **Comprehensive Validation:** Server-side input validation for city routes, flight durations, and booking lead times to ensure model reliability.
+- **End-to-End ML Pipeline:** Includes Jupyter notebooks documenting the entire process from data preprocessing and exploratory data analysis to model training, evaluation, and export.
 
-- Python
-- Flask
-- Pandas
-- Joblib
-- XGBoost
-- HTML, CSS, and vanilla JavaScript
+## Technical Architecture
 
-## Project Structure
+The application is built using a modern, lightweight technology stack:
 
-```text
-.
-|-- airline.ipynb                         # Data analysis, preprocessing, model training, and model export
-|-- Cleaned_dataset.csv                   # Cleaned training dataset
-|-- Scraped_dataset.csv                   # Original scraped dataset
-|-- flight_price_prediction_model.pkl     # Saved XGBoost model used by the Flask app
-|-- index.html                            # Frontend booking console
-|-- styles.css                            # Frontend styling
-|-- server.py                             # Flask server and prediction endpoint
-|-- requirements.txt                      # Python dependencies
-`-- archive.zip                           # Archived dataset/source files
-```
+- **Backend:** Python, Flask
+- **Machine Learning:** XGBoost, Scikit-Learn, Pandas, Joblib
+- **Frontend:** HTML5, CSS3, Vanilla JavaScript
 
-## Dataset
+## Dataset Description
 
-The cleaned dataset contains flight fare records with columns such as:
+The application utilizes a comprehensive dataset of flight records. The cleaned dataset (`Cleaned_dataset.csv`) contains engineered features crucial for accurate predictions:
 
-- `Date_of_journey`
-- `Journey_day`
-- `Airline`
-- `Flight_code`
-- `Class`
-- `Source`
-- `Departure`
-- `Total_stops`
-- `Arrival`
-- `Destination`
-- `Duration_in_hours`
-- `Days_left`
-- `Fare`
+| Feature | Description |
+|---------|-------------|
+| `Airline` | Operating airline (e.g., Indigo, Air India, Vistara) |
+| `Source` | Departure city |
+| `Destination` | Arrival city |
+| `Departure` | Departure time window |
+| `Arrival` | Arrival time window |
+| `Class` | Cabin class |
+| `Total_stops` | Number of layovers |
+| `Duration_in_hours` | Total flight duration in hours |
+| `Days_left` | Number of days between booking and journey |
+| `Fare` | Flight fare in INR (Target Variable) |
 
-The app currently supports these cities:
+Currently supported cities: Ahmedabad, Bangalore, Chennai, Delhi, Hyderabad, Kolkata, Mumbai.
 
-- Ahmedabad
-- Bangalore
-- Chennai
-- Delhi
-- Hyderabad
-- Kolkata
-- Mumbai
+## Model Performance
 
-## Model Summary
+Extensive comparative analysis was conducted across multiple regression algorithms, including Linear Regression, Random Forest, XGBoost, LightGBM, CatBoost, and Multi-Layer Perceptron (MLP).
 
-The notebook compares multiple regression models, including Linear Regression, Random Forest, XGBoost, LightGBM, CatBoost, MLP, and Extra Trees.
+The deployed XGBoost Regressor (`flight_price_prediction_model.pkl`) achieved an approximate **95.58% R-squared (R2) score** on the holdout test set, demonstrating high accuracy in predicting fare variations.
 
-The final deployed model is an XGBoost Regressor saved as:
+## Installation & Setup
 
-```text
-flight_price_prediction_model.pkl
-```
+### Prerequisites
 
-According to the notebook project report, the final XGBoost model achieved approximately `95.58%` R2 score on the test set.
+- Python 3.8 or higher
+- Git
 
-## Setup
+### Installation Steps
 
-### 1. Clone or open the project
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/punitxdev/Airline-Fare-Predictor.git
+   cd Airline-Fare-Predictor
+   ```
 
-```bash
-cd airline_prediciotn
-```
+2. **Create and activate a virtual environment**
+   ```bash
+   # On macOS/Linux
+   python3 -m venv venv
+   source venv/bin/activate
+   
+   # On Windows
+   python -m venv venv
+   venv\Scripts\activate
+   ```
 
-### 2. Create a virtual environment
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```bash
-python3 -m venv venv
-```
+4. **Run the application**
+   ```bash
+   python server.py
+   ```
 
-### 3. Activate the virtual environment
+5. **Access the web interface**
+   Navigate to `http://127.0.0.1:5000` in your web browser.
 
-On Linux or macOS:
+## API Reference
 
-```bash
-source venv/bin/activate
-```
+The application provides a RESTful endpoint for fare predictions.
 
-On Windows:
+### Endpoint: `/predict`
+- **Method:** `POST`
+- **Content-Type:** `application/x-www-form-urlencoded`
 
-```bash
-venv\Scripts\activate
-```
+**Request Parameters:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `airline` | Integer | Airline option index |
+| `source` | Integer | Source city option index |
+| `destination` | Integer | Destination city option index |
+| `departure` | Integer | Departure time-window option index |
+| `arrival` | Integer | Arrival time-window option index |
+| `flight_class` | Integer | Cabin class (encoded) |
+| `total_stops` | Integer | Number of layovers |
+| `duration_hours` | Float | Flight duration in hours |
+| `days_left` | Integer | Days until the journey |
+| `journey_date` | Date | Date in `YYYY-MM-DD` format |
 
-### 4. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-## Run the App
-
-Start the Flask server:
-
-```bash
-python server.py
-```
-
-Then open:
-
-```text
-http://127.0.0.1:5000
-```
-
-Fill in the itinerary form and click **Search Fare** to get a predicted fare.
-
-## API Usage
-
-The app exposes one prediction endpoint:
-
-```http
-POST /predict
-```
-
-Expected form fields:
-
-| Field | Description |
-| --- | --- |
-| `airline` | Airline option index |
-| `source` | Source city option index |
-| `destination` | Destination city option index |
-| `departure` | Departure time-window option index |
-| `arrival` | Arrival time-window option index |
-| `flight_class` | Cabin class encoded as a number |
-| `total_stops` | Number of stops |
-| `duration_hours` | Flight duration in hours |
-| `days_left` | Days between booking and journey |
-| `journey_date` | Date in `YYYY-MM-DD` format |
-
-Example response:
-
+**Successful Response:**
 ```json
 {
   "prediction": 6234.5,
-  "formatted_prediction": "INR 6,234.50",
+  "formatted_prediction": "₹6,234.50",
   "route": "Delhi to Mumbai",
   "airline": "Indigo",
   "journey_day": "Monday",
@@ -163,31 +123,17 @@ Example response:
 }
 ```
 
-## Input Limits
+## Project Structure
 
-The server validates these numeric limits before prediction:
-
-| Input | Range |
-| --- | --- |
-| Duration | `0.75` to `43.58` hours |
-| Days left | `1` to `50` days |
-| Fare output | Clipped between `INR 1,307` and `INR 143,019` |
-
-Source and destination must be different cities.
-
-## Training Workflow
-
-Use `airline.ipynb` to review or reproduce the model-building process:
-
-1. Load and inspect the airline fare dataset.
-2. Clean and preprocess the data.
-3. Encode categorical features.
-4. Engineer date, weekend, duration, and booking lead-time features.
-5. Train and compare regression models.
-6. Save the selected XGBoost model with Joblib.
-
-## Notes
-
-- Keep `flight_price_prediction_model.pkl` in the project root because `server.py` loads it from that location.
-- The current frontend uses indexed select values that are mapped to labels in `server.py`.
-- If you retrain the model with a different feature set, update the preprocessing logic in `server.py` to match the new model features.
+```text
+Airline-Fare-Predictor/
+├── airline.ipynb                         # Data analysis and model training
+├── Cleaned_dataset.csv                   # Cleaned training dataset
+├── Scraped_dataset.csv                   # Original scraped dataset
+├── flight_price_prediction_model.pkl     # Serialized XGBoost model
+├── index.html                            # Frontend user interface
+├── styles.css                            # Frontend styling
+├── server.py                             # Flask application backend
+├── requirements.txt                      # Project dependencies
+└── archive.zip                           # Archived source data
+```
